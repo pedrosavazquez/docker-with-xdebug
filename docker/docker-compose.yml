@@ -1,0 +1,49 @@
+version: '3.5'
+
+services:
+  db:
+    build:
+      context: ""
+      dockerfile: mysql/Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    networks:
+      - backend
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../${SYMFONY_APP_PATH}:/application
+    ports:
+      - ${WEB_LOCAL_PORT_HTTP}:80
+      - ${WEB_LOCAL_PORT_HTTPS}:443
+    depends_on:
+      - php
+      - db
+    networks:
+      - frontend
+      - backend
+  php:
+    build:
+      context: ""
+      dockerfile: php/Dockerfile
+      args:
+        - LOCAL_UID=${LOCAL_UID}
+        - LOCAL_GID=${LOCAL_GID}
+    volumes:
+      - ./php/php-ini-overrides.ini:/user/local/etc/php/conf.d/infaestructure-overrides.ini
+      - ./php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ../${SYMFONY_APP_PATH}:/application
+    depends_on:
+      - db
+    networks:
+      - backend
+
+networks:
+  frontend:
+    name: custom_front
+  backend:
+    name: custom_backend
