@@ -34,9 +34,10 @@ services:
         - LOCAL_UID=${LOCAL_UID}
         - LOCAL_GID=${LOCAL_GID}
     volumes:
-      - ./php/php-ini-overrides.ini:/user/local/etc/php/conf.d/infaestructure-overrides.ini
+      - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/infaestructure-overrides.ini
       - ./php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ../${SYMFONY_APP_PATH}:/application
+      - ./php/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
     depends_on:
       - db
     networks:
