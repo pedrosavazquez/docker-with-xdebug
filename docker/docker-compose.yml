@@ -33,6 +33,10 @@ services:
       args:
         - LOCAL_UID=${LOCAL_UID}
         - LOCAL_GID=${LOCAL_GID}
+    container_name: xdebug-php-fpm
+    working_dir: /application
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
     volumes:
       - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/infaestructure-overrides.ini
       - ./php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
